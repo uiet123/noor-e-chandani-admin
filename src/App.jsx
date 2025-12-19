@@ -8,7 +8,7 @@ import AddCollections from './components/AddCollections/AddCollections'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 const App = () => {
   return (
-   <BrowserRouter>
+   <BrowserRouter basename="/admin">
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
