@@ -6,6 +6,7 @@ import Products from './components/Products/Products'
 import AddProducts from './components/AddProducts/AddProducts'
 import AddCollections from './components/AddCollections/AddCollections'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import EditProduct from './components/EditProduct/EditProduct.jsx'
 const App = () => {
   return (
    <BrowserRouter basename="/admin">
@@ -16,6 +17,7 @@ const App = () => {
       <Route path='/products' element={<Products />} />
       <Route path="/products/add" element={<AddProducts />} />
       <Route path="/collections/add" element={<AddCollections />} />
+      <Route path="/products/edit/:id" element={<EditProduct />} />
       </Route>
     </Routes>
    </BrowserRouter>

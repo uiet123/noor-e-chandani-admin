@@ -197,4 +197,9 @@
   .admin-add-btn {
     width: 40%;
   }
+  .btns-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 }

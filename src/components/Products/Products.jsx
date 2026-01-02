@@ -37,21 +37,21 @@ const AdminProducts = () => {
   };
 
   const deleteThisProduct = async (id) => {
-    try{
-          const res = await axios.post(`${BASE_URL}/admin/deleteProduct`, { id }, {
-        withCredentials: true
-          })
-         setProducts((prev) => prev.filter((p) => p._id !== id));
-        alert("Product successfully deleted")
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/admin/deleteProduct`,
+        { id },
+        {
+          withCredentials: true,
         }
-          
-
-    catch(err){
-        console.error(err)
-        alert("Failed to delete product")
+      );
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+      alert("Product successfully deleted");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete product");
     }
-  }
-
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -72,22 +72,20 @@ const AdminProducts = () => {
       <div className="admin-products-header">
         <h1>Products</h1>
         <div className="product-collection-btn">
-            <button
-          className="admin-add-btn"
-          onClick={() => navigate("/collections/add")}
-        >
-          + Add New Collection
-        </button>
+          <button
+            className="admin-add-btn"
+            onClick={() => navigate("/collections/add")}
+          >
+            + Add New Collection
+          </button>
 
-         <button
-          className="admin-add-btn"
-          onClick={() => navigate("/products/add")}
-        >
-          + Add New Product
-        </button>
-
+          <button
+            className="admin-add-btn"
+            onClick={() => navigate("/products/add")}
+          >
+            + Add New Product
+          </button>
         </div>
-        
       </div>
 
       <div className="product-top-bar">
@@ -117,7 +115,7 @@ const AdminProducts = () => {
               <th>Name</th>
               <th>Collection</th>
               <th>Price (₹)</th>
-             
+
               <th>Delete</th>
             </tr>
           </thead>
@@ -139,11 +137,16 @@ const AdminProducts = () => {
                 <td>{p.name}</td>
                 <td>{p.collection?.name || "-"}</td>
                 <td>{p.price}</td>
-               
 
-                
                 <td>
-                     <button
+                  <button
+                    className="edit-btn"
+                    onClick={() => navigate(`/products/edit/${p._id}`)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
                     className="edit-btn"
                     onClick={() => deleteThisProduct(p._id)}
                   >
@@ -175,14 +178,22 @@ const AdminProducts = () => {
               <p>Price: ₹{p.price}</p>
             </div>
 
-           
-                     <button
-                    className="edit-btn"
-                    onClick={() => deleteThisProduct(p._id)}
-                  >
-                    Delete
-                  </button>
-                
+            <div className="btns-mobile">
+
+            <button
+              className="edit-btn"
+              onClick={() => navigate(`/products/edit/${p._id}`)}
+            >
+              Edit
+            </button>
+
+            <button
+              className="edit-btn"
+              onClick={() => deleteThisProduct(p._id)}
+            >
+              Delete
+            </button>
+            </div>
           </div>
         ))}
       </div>
