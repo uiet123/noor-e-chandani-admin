@@ -88,7 +88,7 @@ const EditProduct = () => {
       });
 
       await axios.patch(
-        `${BASE_URL}/admin/updateProduct/${id}`,
+        `${BASE_URL}/adminEdit/updateProduct/${id}`,
         fd,
         {
           headers: { "Content-Type": "multipart/form-data" },
