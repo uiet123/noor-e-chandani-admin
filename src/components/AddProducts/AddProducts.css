@@ -6,6 +6,81 @@
   color: white;
 }
 
+/* container of all chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.chip-input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chip-input-row input {
+  flex: 1;
+}
+
+.add-btn {
+  background: #f1c94a;
+  color: #000;
+  border: none;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #e5b93c;
+}
+
+/* Mobile safe */
+
+
+
+/* single chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #f1c94a; /* gold */
+  color: #000;
+
+  padding: 0px 4px;
+  border-radius: 20px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  width: auto;          /* 🔥 VERY IMPORTANT */
+  max-width: max-content;
+}
+
+/* cross button */
+.chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+
+  padding: 0;
+  color: #000;
+}
+
+/* input wrapper */
+.chip-input input {
+  width: 100%;
+}
+
+
 .add-product-page h1 {
   color: #eec84d;
   margin-bottom: 25px;
@@ -48,7 +123,7 @@
   background: #eec84d;
   color: #0b0b0b;
   border: none;
-  width: 50%;
+  width: 20%;
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
@@ -74,6 +149,17 @@
 }
 
 /* Responsive */
+@media (max-width: 600px) {
+  .chip-input-row {
+    flex-direction: row;
+  }
+
+  .add-btn {
+    padding: 0 12px;
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 768px) {
   .add-product-page {
     padding: 20px;

@@ -22,7 +22,66 @@ const AddProducts = () => {
     stock: "",
     collection: "",
     images: [],
+
+    customizationType: "ADMIN_DEFINED",
+
+     fixedColor: "",
+  availableColors: [],
+
+  fixedFragrance: "",
+availableFragrances: []
   });
+
+  const DEFAULT_USER_COLORS = [
+  "Red",
+  "Green",
+  "Blue",
+  "Yellow",
+  "Orange",
+  "White",
+];
+
+const DEFAULT_USER_FRAGRANCES = [
+  "Rose",
+  "Vanilla",
+  "Lavender",
+  "Lemon",
+  "Jasmine",
+  "Non-Scented",
+];
+
+
+const updateField = (e) => {
+  const { name, value } = e.target;
+
+  // 🔥 Special handling for customizationType
+  if (name === "customizationType") {
+    if (value === "USER_DEFINED") {
+      setForm({
+        ...form,
+        customizationType: value,
+        availableColors: DEFAULT_USER_COLORS,
+        availableFragrances: DEFAULT_USER_FRAGRANCES,
+        fixedColor: "",
+        fixedFragrance: "",
+      });
+    } else {
+      setForm({
+        ...form,
+        customizationType: value,
+        fixedColor: "",
+         fixedFragrance: "",
+        availableColors: [],
+        availableFragrances: [],
+      });
+    }
+    return;
+  }
+
+  setForm({ ...form, [name]: value });
+};
+
+
 
   const fetchCollections = async () => {
     try {
@@ -38,10 +97,7 @@ const AddProducts = () => {
     fetchCollections();
   }, []);
 
-  // 🔹 HANDLE TEXT INPUT
-  const updateField = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+
 
   // 🔹 HANDLE IMAGE SELECT
   const handleImageChange = (e) => {
@@ -59,7 +115,7 @@ const AddProducts = () => {
 
       Object.keys(form).forEach((key) => {
         if (key === "images") {
-          form.images.forEach((img) => fd.append("image", img)); 
+          form.images.forEach((img) => fd.append("image", img));
         } else {
           fd.append(key, form[key]);
         }
@@ -82,12 +138,57 @@ const AddProducts = () => {
 
   return (
     <div className="add-product-page">
-
       <h1>Add New Product</h1>
 
       <form className="add-prod-form" onSubmit={handleSubmit}>
+        <label>Product Customization</label>
+        <select
+          name="customizationType"
+          value={form.customizationType}
+          onChange={updateField}
+        >
+          <option value="ADMIN_DEFINED">Admin Defined</option>
+          <option value="USER_DEFINED">User Defined</option>
+        </select>
 
-        {/* NAME */}
+        {form.customizationType === "ADMIN_DEFINED" && (
+  <>
+    <label>Fixed Candle Color</label>
+    <input
+      type="text"
+      name="fixedColor"
+      placeholder="e.g. Lemon Yellow"
+      value={form.fixedColor}
+      onChange={updateField}
+      required
+    />
+
+     <label>Fixed Fragrance</label>
+    <input
+      type="text"
+      name="fixedFragrance"
+      placeholder="e.g. Lemon"
+      value={form.fixedFragrance}
+      onChange={updateField}
+    />
+  </>
+)}
+
+
+{form.customizationType === "USER_DEFINED" && (
+  <>
+  <p className="info-text">
+    Available Colors: Red, Green, Blue, Yellow, Orange, White
+  </p>
+  <p className="info-text">
+    Available Fragrances: Rose, Vanilla, Lavender, Lemon, Jasmine, Non-Scented
+  </p>
+  </>
+)}
+
+
+
+
         <label>Product Name</label>
         <input
           type="text"
@@ -135,14 +236,13 @@ const AddProducts = () => {
           required
         />
 
-          <label>Actual Price (₹)</label>
+        <label>Actual Price (₹)</label>
         <input
           type="number"
           name="actualPrice"
           placeholder="Enter actual price"
           value={form.actualPrice}
           onChange={updateField}
-         
         />
 
         {/* STOCK */}
@@ -169,29 +269,11 @@ const AddProducts = () => {
             />
           </div>
 
-          <div>
-            <label>Fragrance Type</label>
-            <input
-              type="text"
-              name="fragranceType"
-              value={form.fragranceType}
-              onChange={updateField}
-              placeholder="Scented"
-            />
-          </div>
+   
         </div>
 
         <div className="two-grid">
-          <div>
-            <label>Scent Name</label>
-            <input
-              type="text"
-              name="scentName"
-              value={form.scentName}
-              onChange={updateField}
-              placeholder="Rose Mary"
-            />
-          </div>
+         
 
           <div>
             <label>Burn Time</label>

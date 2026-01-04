@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 import { useNavigate, useParams } from "react-router-dom";
-import "../AddProducts/AddProducts.css"; 
+import "../AddProducts/AddProducts.css";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -10,6 +10,8 @@ const EditProduct = () => {
 
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [colorInput, setColorInput] = useState("");
+  const [fragranceInput, setFragranceInput] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -23,17 +25,42 @@ const EditProduct = () => {
     weight: "",
     stock: "",
     collection: "",
-    images: [],          // new images (optional)
-    oldImages: [],       // existing images
+
+    customizationType: "ADMIN_DEFINED",
+
+    fixedColor: "",
+    availableColors: [],
+
+    fixedFragrance: "",
+    availableFragrances: [],
+
+    images: [],
+    oldImages: [],
   });
 
-  // 🔹 Fetch collections
+  const DEFAULT_USER_COLORS = [
+    "Red",
+    "Green",
+    "Blue",
+    "Yellow",
+    "Orange",
+    "White",
+  ];
+
+  const DEFAULT_USER_FRAGRANCES = [
+    "Rose",
+    "Vanilla",
+    "Lavender",
+    "Lemon",
+    "Jasmine",
+    "Non-Scented",
+  ];
+
   const fetchCollections = async () => {
     const res = await axios.get(`${BASE_URL}/collections`);
     setCollections(res?.data?.data || []);
   };
 
-  // 🔹 Fetch product data
   const fetchProduct = async () => {
     const res = await axios.get(`${BASE_URL}/products/${id}`);
     const p = res.data.data;
@@ -51,8 +78,47 @@ const EditProduct = () => {
       weight: p.weight || "",
       stock: p.stock || "",
       collection: p.collection?._id || "",
+
+      customizationType: p.customizationType || "ADMIN_DEFINED",
+
+      fixedColor: p.fixedColor || "",
+      fixedFragrance: p.fixedFragrance || "",
+
+      availableColors: p.availableColors || [],
+      availableFragrances: p.availableFragrances || [],
+
       oldImages: p.image || [],
     }));
+  };
+
+  const addColor = () => {
+    if (!colorInput.trim()) return;
+
+    if (form.availableColors.includes(colorInput.trim())) {
+      setColorInput("");
+      return;
+    }
+
+    setForm({
+      ...form,
+      availableColors: [...form.availableColors, colorInput.trim()],
+    });
+    setColorInput("");
+  };
+
+  const addFragrance = () => {
+    if (!fragranceInput.trim()) return;
+
+    if (form.availableFragrances.includes(fragranceInput.trim())) {
+      setFragranceInput("");
+      return;
+    }
+
+    setForm({
+      ...form,
+      availableFragrances: [...form.availableFragrances, fragranceInput.trim()],
+    });
+    setFragranceInput("");
   };
 
   useEffect(() => {
@@ -62,7 +128,39 @@ const EditProduct = () => {
 
   // 🔹 INPUT CHANGE
   const updateField = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // 🔥 SAME AS ADD PRODUCT
+    if (name === "customizationType") {
+      if (value === "USER_DEFINED") {
+        setForm({
+          ...form,
+          customizationType: value,
+          availableColors:
+            form.availableColors.length > 0
+              ? form.availableColors
+              : DEFAULT_USER_COLORS,
+          availableFragrances:
+            form.availableFragrances.length > 0
+              ? form.availableFragrances
+              : DEFAULT_USER_FRAGRANCES,
+          fixedColor: "",
+          fixedFragrance: "",
+        });
+      } else {
+        setForm({
+          ...form,
+          customizationType: value,
+          fixedColor: "",
+          fixedFragrance: "",
+          availableColors: [],
+          availableFragrances: [],
+        });
+      }
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   // 🔹 IMAGE CHANGE
@@ -87,14 +185,10 @@ const EditProduct = () => {
         }
       });
 
-      await axios.patch(
-        `${BASE_URL}/adminEdit/updateProduct/${id}`,
-        fd,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      );
+      await axios.patch(`${BASE_URL}/adminEdit/updateProduct/${id}`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
 
       alert("Product updated successfully!");
       navigate("/products");
@@ -111,7 +205,127 @@ const EditProduct = () => {
       <h1>Edit Product</h1>
 
       <form className="add-prod-form" onSubmit={handleSubmit}>
-        {/* NAME */}
+        <label>Customization Type</label>
+        <select
+          name="customizationType"
+          value={form.customizationType}
+          onChange={updateField}
+        >
+          <option value="ADMIN_DEFINED">Admin Defined</option>
+          <option value="USER_DEFINED">User Defined</option>
+        </select>
+
+        {form.customizationType === "ADMIN_DEFINED" && (
+          <>
+            <label>Fixed Candle Color</label>
+            <input
+              type="text"
+              name="fixedColor"
+              placeholder="e.g. Lemon Yellow"
+              value={form.fixedColor}
+              onChange={updateField}
+              required
+            />
+
+            <label>Fixed Fragrance</label>
+            <input
+              type="text"
+              name="fixedFragrance"
+              placeholder="e.g. Lemon"
+              value={form.fixedFragrance}
+              onChange={updateField}
+            />
+          </>
+        )}
+
+        {form.customizationType === "USER_DEFINED" && (
+          <>
+            {/* AVAILABLE COLORS */}
+            <label>Available Colors</label>
+            <div className="chip-input-row">
+              <input
+                type="text"
+                placeholder="Type color"
+                value={colorInput}
+                onChange={(e) => setColorInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addColor();
+                  }
+                }}
+              />
+
+              <button type="button" className="add-btn" onClick={addColor}>
+                Add
+              </button>
+            </div>
+
+            <div className="chips">
+              {form.availableColors.map((c, i) => (
+                <span key={i} className="chip">
+                  {c}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        availableColors: form.availableColors.filter(
+                          (_, idx) => idx !== i
+                        ),
+                      })
+                    }
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            {/* AVAILABLE FRAGRANCES */}
+            <label>Available Fragrances</label>
+            <div className="chip-input-row">
+              <input
+                type="text"
+                placeholder="Type fragrance"
+                value={fragranceInput}
+                onChange={(e) => setFragranceInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addFragrance();
+                  }
+                }}
+              />
+
+              <button type="button" className="add-btn" onClick={addFragrance}>
+                Add
+              </button>
+            </div>
+
+            <div className="chips">
+              {form.availableFragrances.map((f, i) => (
+                <span key={i} className="chip">
+                  {f}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        availableFragrances: form.availableFragrances.filter(
+                          (_, idx) => idx !== i
+                        ),
+                      })
+                    }
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+
         <label>Product Name</label>
         <input
           type="text"
@@ -186,27 +400,11 @@ const EditProduct = () => {
             />
           </div>
 
-          <div>
-            <label>Fragrance Type</label>
-            <input
-              type="text"
-              name="fragranceType"
-              value={form.fragranceType}
-              onChange={updateField}
-            />
-          </div>
+        
         </div>
 
         <div className="two-grid">
-          <div>
-            <label>Scent Name</label>
-            <input
-              type="text"
-              name="scentName"
-              value={form.scentName}
-              onChange={updateField}
-            />
-          </div>
+      
 
           <div>
             <label>Burn Time</label>
