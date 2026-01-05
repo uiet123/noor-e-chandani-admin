@@ -38,23 +38,39 @@ availableFragrances: []
   "Blue",
   "Yellow",
   "Orange",
+  "Pink",
   "White",
 ];
 
 const DEFAULT_USER_FRAGRANCES = [
+  "Iceburg",
+  "First Spring",
   "Rose",
+  "British Rose",
   "Vanilla",
+  "Rose Mary",
+  "Cherry",
+  "Mix Fruit",
+  "Fresh Oudh",
+  "Coffee",
+  "Masala Chai",
+  "Orange",
+  "Sandalwood",
   "Lavender",
-  "Lemon",
+  "Watermelon",
+  "Cinnamon",
   "Jasmine",
-  "Non-Scented",
+  "Lemon",
+  "Whiskey",
+  "Mango",
+  "Chocolate",
+  "Ocean Breeze",
+  "Strawberry",
 ];
 
 
 const updateField = (e) => {
   const { name, value } = e.target;
-
-  // 🔥 Special handling for customizationType
   if (name === "customizationType") {
     if (value === "USER_DEFINED") {
       setForm({

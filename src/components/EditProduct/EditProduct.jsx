@@ -44,16 +44,34 @@ const EditProduct = () => {
     "Blue",
     "Yellow",
     "Orange",
+    "Pink",
     "White",
   ];
 
   const DEFAULT_USER_FRAGRANCES = [
+    "Iceburg",
+    "First Spring",
     "Rose",
+    "British Rose",
     "Vanilla",
+    "Rose Mary",
+    "Cherry",
+    "Mix Fruit",
+    "Fresh Oudh",
+    "Coffee",
+    "Masala Chai",
+    "Orange",
+    "Sandalwood",
     "Lavender",
-    "Lemon",
+    "Watermelon",
+    "Cinnamon",
     "Jasmine",
-    "Non-Scented",
+    "Lemon",
+    "Whiskey",
+    "Mango",
+    "Chocolate",
+    "Ocean Breeze",
+    "Strawberry",
   ];
 
   const fetchCollections = async () => {
@@ -399,13 +417,9 @@ const EditProduct = () => {
               onChange={updateField}
             />
           </div>
-
-        
         </div>
 
         <div className="two-grid">
-      
-
           <div>
             <label>Burn Time</label>
             <input
