@@ -25,7 +25,7 @@ const LoginPage = () => {
             navigate("/dashboard");
 
         }catch(err){
-            setErrors(err.response.data);
+            console.log("Login Error:", err);
         }
     }
 

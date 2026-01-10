@@ -6,8 +6,12 @@ import "./AddProducts.css";
 
 const AddProducts = () => {
   const [collections, setCollections] = useState([]);
+  const [colorInput, setColorInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fragranceInput, setFragranceInput] = useState("");
   const navigate = useNavigate();
+
+  
 
   const [form, setForm] = useState({
     name: "",
@@ -152,6 +156,34 @@ const updateField = (e) => {
     }
   };
 
+
+
+   const addColor = () => {
+    if (!colorInput.trim()) return;
+
+    if (form.availableColors.includes(colorInput.trim())) {
+      setColorInput("");
+      return;
+    }
+
+    setForm({
+      ...form,
+      availableColors: [...form.availableColors, colorInput.trim()],
+    });
+    setColorInput("");
+  };
+
+  const addFragrance = () => {
+    if (!fragranceInput.trim()) return;
+
+    if (form.availableFragrances.includes(fragranceInput.trim())) {
+      setFragranceInput("");
+      return;
+    }
+  }
+
+  
+
   return (
     <div className="add-product-page">
       <h1>Add New Product</h1>
@@ -192,15 +224,92 @@ const updateField = (e) => {
 
 
 {form.customizationType === "USER_DEFINED" && (
-  <>
-  <p className="info-text">
-    Available Colors: Red, Green, Blue, Yellow, Orange, White
-  </p>
-  <p className="info-text">
-    Available Fragrances: Rose, Vanilla, Lavender, Lemon, Jasmine, Non-Scented
-  </p>
-  </>
-)}
+          <>
+            {/* AVAILABLE COLORS */}
+            <label>Available Colors</label>
+            <div className="chip-input-row">
+              <input
+                type="text"
+                placeholder="Type color"
+                value={colorInput}
+                onChange={(e) => setColorInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addColor();
+                  }
+                }}
+              />
+
+              <button type="button" className="add-btn" onClick={addColor}>
+                Add
+              </button>
+            </div>
+
+            <div className="chips">
+              {form.availableColors.map((c, i) => (
+                <span key={i} className="chip">
+                  {c}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        availableColors: form.availableColors.filter(
+                          (_, idx) => idx !== i
+                        ),
+                      })
+                    }
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            {/* AVAILABLE FRAGRANCES */}
+            <label>Available Fragrances</label>
+            <div className="chip-input-row">
+              <input
+                type="text"
+                placeholder="Type fragrance"
+                value={fragranceInput}
+                onChange={(e) => setFragranceInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addFragrance();
+                  }
+                }}
+              />
+
+              <button type="button" className="add-btn" onClick={addFragrance}>
+                Add
+              </button>
+            </div>
+
+            <div className="chips">
+              {form.availableFragrances.map((f, i) => (
+                <span key={i} className="chip">
+                  {f}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        availableFragrances: form.availableFragrances.filter(
+                          (_, idx) => idx !== i
+                        ),
+                      })
+                    }
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+            </div>
+          </>
+        )}
 
 
 
